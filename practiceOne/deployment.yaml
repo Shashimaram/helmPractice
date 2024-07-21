@@ -1,0 +1,55 @@
+meBelive: {{- .Values.myBelive | indent 2 }}
+apiVersion : {{- .Values.apiVersion | indent 2 }}
+metadata:
+{{- range $i, $value := .Values.metadata }}
+{{ $i | indent 2 }}: {{ $value }}
+{{- end }}
+spec:
+  selector:
+    matchLabels:
+    {{- range $i, $value := .Values.matchLabels }}
+    {{ $i | indent 2 }}: {{ $value }}
+    {{- end }}
+  template:
+    metadata:
+      labels:
+      {{- range $i, $value := .Values.template.labels }}
+      {{ $i | indent 2 }}: {{ $value }}
+      {{- end }}
+    spec:
+      containers:
+      - name: {{ .Values.image.name | lower | trim}}
+        image: {{ .Values.image.repoName }}:{{ .Values.image.tag }}
+        {{- with .Values.resources }}
+        resources:
+          requests:
+            memory: {{ .requests.memory | quote }}
+            cpu: {{ .requests.cpu | quote }}
+          limits:
+            memory: {{ .limits.memory | quote }}
+            cpu: {{ .limits.cpu| quote }}
+          {{- end }}
+        {{- with .Values.securityContext }}
+        securityContext:
+          allowPrivilegeEscalation: {{ .allowPrivilegeEscalation | lower }}
+          runAsUser: {{ .runAsUser | lower }}
+          runAsGroup: {{ .runAsGroup | lower }}
+          runAsNonRoot: {{ .runAsNonRoot | lower }}
+        {{- end }}
+        ports:
+        {{- range $i, $value := .Values.ports }}
+        - name: port-{{ $value }}
+          port: {{ $value }}
+        {{- end }}
+        {{- with .Values.environmentVariables }}
+        env:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.livenessProbe }}
+        livenessProbe:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.livenessProbe }}
+        readinessProbe:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}

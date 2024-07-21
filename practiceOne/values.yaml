@@ -1,0 +1,57 @@
+myBelive: jai maisamma thali,jai poshamma thali,jai hanuman
+apiVersion: apps/v1
+metadata:
+  name: test
+  name2: test
+  name3: test
+  name4: test
+
+
+matchLabels:
+  test1: try
+  test2: test3
+  test4: testtvev
+
+template:
+  labels: {}
+  
+  
+image:
+  name: test
+  repoName: shashidher/product_backend
+  tag: nodb
+
+
+resources:
+  requests:
+    memory: "32Mi"
+    cpu: "100m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+
+securityContext: {}
+
+ports:
+  test: 23242
+
+
+environmentVariables:
+  test: test
+  test3: test
+  test4: 53w5
+  test6: ete
+  
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  
+readinessProbe:
+  httpGet:
+    path: /test
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 20
